@@ -6,11 +6,12 @@ diffcl = input("введите сложность(нуб, нормально, с
 resolution = (1920, 980)
 
 pygame.font.init()
-speed = pygame.font.SysFont('candara', 20)
-score = pygame.font.SysFont('candara', 20)
-dead = pygame.font.SysFont('candara', 60)
-diffclt = pygame.font.SysFont('candara', 20)
-nuke = pygame.font.SysFont('candara', 20)
+speed = pygame.font.SysFont('candara', 25)
+score = pygame.font.SysFont('candara', 25)
+dead = pygame.font.SysFont('impact', 40)
+diffclt = pygame.font.SysFont('candara', 25)
+nuke = pygame.font.SysFont('candara', 25)
+restart = pygame.font.SysFont('impact', 25)
 
 display = pygame.display.set_mode(resolution)
 
@@ -30,6 +31,7 @@ else:
     cube = 30
     fps = 5
     diffcl = 'нуб'
+
 fps_start = fps
 
 mapa = resolution[0] // cube, resolution[1] // cube
@@ -72,6 +74,7 @@ while run:
     ochki = len(snake)
     clock.tick(fps)
     display.fill('black')
+
     for i in pygame.event.get():
         if i.type == pygame.QUIT:
             run = False
@@ -85,6 +88,13 @@ while run:
                     napr = 2
                 if i.key == pygame.K_UP and napr != 1:
                     napr = 3
+            else:
+                if i.key == pygame.K_SPACE:
+                    live = True
+                    snake = [df_pos]
+                    apple = randint(0, mapa[0] - 1), randint(0, mapa[1] - 1)
+                    fps = fps_start
+                    napr = 0
 
     [pygame.draw.rect(display, 'green', (x * cube, y * cube, cube - 1, cube - 1))for x, y in snake]
     pygame.draw.rect(display, 'red', (apple[0] * cube, apple[1] * cube, cube - 1, cube - 1))
@@ -101,13 +111,17 @@ while run:
             else:
                 snake.pop(-1)
     else:
-        end_text = dead.render(f"ИГРА ОКОНЧЕНА", True, "blue")
+        end_text = dead.render(f"ИГРА ОКОНЧЕНА", True, "white")
+
         display.blit(end_text, (resolution[0] // 2 - end_text.get_width() // 2, resolution[1] // 2))
+        restart_text = (restart.render('нажмите пробел, чтобы начать заново', True, 'white'))
+        display.blit(restart_text, (resolution[0] // 2 - restart_text.get_width() // 2, resolution[1] // 2 + 60))
         set_record(record, ochki)
     dj = nuke.render(f'ваш рекорд: {record}', True, 'white')
     dj2 = diffclt.render(f'сложность: {diffcl}', True, 'white')
+    # dj3 = restart.render('нажмите пробел, чтобы начать заново', True, 'white')
     display.blit(speed.render(f'текущая скорость: {fps}', True, 'white'), (5, 35))
-    display.blit(score.render(f"ваши очки: {len(snake)}", True, "white"), (5, 5))
+    display.blit(score.render(f"ваши очки: {len(snake)-1}", True, "white"), (5, 5))
     display.blit(dj2, (5, resolution[1] - dj2.get_height() - 5))
     display.blit(dj, (resolution[0] - dj.get_width() - 5, 5))
 
