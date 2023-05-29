@@ -1,7 +1,9 @@
 import pygame
 from random import randint
+import os
 
-diffcl = input("введите сложность(нуб, нормально, сильный, про): ")
+diffcl = input(f"введите сложность(нуб, нормально, сильный, про) \nили напишите очистка чтобы удалить"
+               f" рекорд(потребуется снова выбрать сложность): ")
 
 resolution = (1920, 980)
 
@@ -14,6 +16,13 @@ nuke = pygame.font.SysFont('candara', 25)
 restart = pygame.font.SysFont('impact', 25)
 
 display = pygame.display.set_mode(resolution)
+
+if diffcl == 'очистка':
+    if os.path.isfile('record'):
+        os.remove('record')
+    cube = 30
+    fps = 5
+    diffcl = input('введите сложность(нуб, нормально, сильный, про): ')
 
 if diffcl == 'нуб':
     cube = 30
@@ -30,7 +39,7 @@ elif diffcl == 'про':
 else:
     cube = 30
     fps = 5
-    diffcl = 'нуб'
+    diffcl = 'нуб(неправильный изначальный ввод)'
 
 fps_start = fps
 
@@ -69,7 +78,7 @@ def set_record(record, ochki):
 
 pygame.time.delay(3000)
 
-while run:
+while run is True:
     record = get_record()
     ochki = len(snake)
     clock.tick(fps)
@@ -119,7 +128,7 @@ while run:
         set_record(record, ochki)
     dj = nuke.render(f'ваш рекорд: {record}', True, 'white')
     dj2 = diffclt.render(f'сложность: {diffcl}', True, 'white')
-    # dj3 = restart.render('нажмите пробел, чтобы начать заново', True, 'white')
+    dj3 = restart.render('нажмите пробел, чтобы начать заново', True, 'white')
     display.blit(speed.render(f'текущая скорость: {fps}', True, 'white'), (5, 35))
     display.blit(score.render(f"ваши очки: {len(snake)-1}", True, "white"), (5, 5))
     display.blit(dj2, (5, resolution[1] - dj2.get_height() - 5))
